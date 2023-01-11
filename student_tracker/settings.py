@@ -6,15 +6,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False)
 )
-
 environ.Env.read_env(BASE_DIR / '.env')
-
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
-
 ALLOWED_HOSTS = ['*']
-
-DJANGO_APPS  = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
