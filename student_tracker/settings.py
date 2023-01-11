@@ -12,7 +12,7 @@ environ.Env.read_env(BASE_DIR / '.env')
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['*']
 
 DJANGO_APPS  = [
     'django.contrib.admin',
