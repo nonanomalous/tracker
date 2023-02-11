@@ -30,7 +30,7 @@ class Category(models.Model):
 class SubCategory(models.Model):
     def default_supported_by():
         group, _ = Group.objects.get_or_create(name="Level1")
-        return group
+        return group.id
 
     name = models.CharField(max_length=32)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -58,11 +58,11 @@ class Status(models.Model):
 class Issue(models.Model):
     def default_status():
         status, _ = Status.objects.get_or_create(name="New")
-        return status
+        return status.id
     def default_subcategory():
         category, _ = Category.objects.get_or_create(name="General")
         subcategory, _ = SubCategory.objects.get_or_create(name="General", category=category)
-        return subcategory
+        return subcategory.id
 
     brief = models.CharField(max_length=32, default="")
     description = models.CharField(max_length=255, default="")
