@@ -1,0 +1,1 @@
+from .issue_permissions import IsReportingStudentOrAdmin, IsAdmin, IsAdminOrReadOnly

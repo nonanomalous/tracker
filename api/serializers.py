@@ -14,10 +14,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
 
-class IssueSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Issue
-        fields = ['url', 'brief', 'description', 'subcategory']
+
 
 class DocumentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

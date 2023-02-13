@@ -5,5 +5,5 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('', IssueListView.as_view(), name='issue-list'),
+    path('', IssueListView.as_view(), name='fe-issue-list'),
 ]

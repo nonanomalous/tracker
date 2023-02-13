@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 from .models import Reason, Status
 
 
-for team in ["Student","Level1","Level2","Level3","General","Registrations","Class Support","Finance"]:
+for team in ["Student","Level1","Level2","Level3","General","Registrations","Class Support","Finance", "Admin"]:
     Group.objects.get_or_create(name=team)
     
 for reason in ["Student commented","Agent acknowledged","Resolved","No Response","Happened Again"]:
