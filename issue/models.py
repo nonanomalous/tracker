@@ -33,10 +33,10 @@ class SubCategory(models.Model):
         return group.id
 
     name = models.CharField(max_length=32)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    supportedBy = models.ForeignKey(Group, null=True, blank=True, default=default_supported_by, on_delete=models.SET_NULL)
-    links = models.ManyToManyField(Link)
-    documents = models.ManyToManyField(Document)
+    category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
+    supportedBy = models.ForeignKey(Group, related_name='support_categories', null=True, blank=True, default=default_supported_by, on_delete=models.SET_NULL)
+    links = models.ManyToManyField(Link, blank=True)
+    documents = models.ManyToManyField(Document, blank=True)
 
     def __str__(self):
         return f'{self.category.name} - {self.name}'
@@ -65,8 +65,8 @@ class Issue(models.Model):
         return subcategory.id
 
     brief = models.CharField(max_length=32, default="")
-    description = models.CharField(max_length=255, default="")
-    student = models.ForeignKey(User, on_delete=models.PROTECT)
+    description = models.TextField(default="")
+    student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
     subcategory = models.ForeignKey(SubCategory, default=default_subcategory, on_delete=models.PROTECT)
     status = models.ForeignKey(Status, default=default_status, on_delete=models.PROTECT)
     
@@ -82,7 +82,7 @@ class Reason(models.Model):
 class Progress(models.Model):
     assignee = models.ForeignKey(User, related_name="assigned_tickets", on_delete=models.CASCADE)
     team = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL)
-    issue = models.ForeignKey(Issue,on_delete=models.CASCADE)
+    issue = models.ForeignKey(Issue, related_name='progress', on_delete=models.CASCADE)
     reason = models.ForeignKey(Reason, null=True, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
