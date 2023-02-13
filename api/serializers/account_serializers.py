@@ -3,8 +3,6 @@ from django.contrib.auth.models import Group
 
 from rest_framework import serializers
 
-from issue.models import Issue
-
 User=get_user_model()
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

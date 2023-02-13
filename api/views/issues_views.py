@@ -27,7 +27,7 @@ class IssueList(generics.ListCreateAPIView):
         serializer = IssueSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
-class IssueDetail(generics.RetrieveAPIView):
+class IssueDetail(generics.RetrieveUpdateAPIView):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     permission_classes = [IsReportingStudentOrAdmin]

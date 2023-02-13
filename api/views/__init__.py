@@ -3,7 +3,7 @@ from .account_views import *
 from .issues_views import *
 from .subcategory_views import *
 from .status_views import *
-
+from .support_views import *
 
 
 # from rest_framework import routers
