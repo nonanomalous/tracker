@@ -101,11 +101,11 @@ class Progress(models.Model):
 
 class Comment(models.Model):
     message = models.TextField(blank=True, null=True)
-    progress = models.ForeignKey(Progress,on_delete=models.CASCADE)
+    progress = models.ForeignKey(Progress, related_name='comments', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    link = models.ManyToManyField(Link)
-    document = models.ManyToManyField(Document)
+    link = models.ManyToManyField(Link, blank=True)
+    document = models.ManyToManyField(Document, blank=True)
 
     def __str__(self):
         return f'Issue {self.progress.issue.id}: {self.reason.name}'

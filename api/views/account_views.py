@@ -13,7 +13,7 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdmin,]
 
-class UserDetail(generics.RetrieveAPIView):
+class UserDetail(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin,]
@@ -23,7 +23,7 @@ class GroupList(generics.ListAPIView):
     serializer_class = GroupSerializer
     permission_classes = [IsAdmin,]
 
-class GroupDetail(generics.RetrieveAPIView):
+class GroupDetail(generics.RetrieveUpdateAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAdmin,]

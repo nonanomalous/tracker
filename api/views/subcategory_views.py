@@ -13,7 +13,7 @@ class SubCategoryList(generics.ListCreateAPIView):
     serializer_class = SubCategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 
-class SubCategoryDetail(generics.RetrieveAPIView):
+class SubCategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -23,7 +23,7 @@ class CategoryList(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 
-class CategoryDetail(generics.RetrieveAPIView):
+class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
