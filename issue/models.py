@@ -36,7 +36,7 @@ class MyGroup(Group, GetterMixin):
 class SubCategory(models.Model, GetterMixin):
     name = models.CharField(max_length=32)
     category = models.ForeignKey(Category, related_name='subcategories', default=Category.GeneralId, on_delete=models.SET_DEFAULT)
-    supportedBy = models.ForeignKey(Group, related_name='support_categories', default=MyGroup.Level1Id, on_delete=models.SET_DEFAULT)
+    supportedBy = models.ForeignKey(Group, related_name='support_categories', default=1, on_delete=models.SET_DEFAULT)
     links = models.ManyToManyField(Link, blank=True)
     documents = models.ManyToManyField(Document, blank=True)
 
@@ -63,7 +63,7 @@ class Issue(models.Model):
     student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
     subcategory = models.ForeignKey(SubCategory, default=SubCategory.GeneralId, on_delete=models.PROTECT)
     status = models.ForeignKey(Status, default=Status.NewId, on_delete=models.PROTECT)
-    escalation = models.ForeignKey(Group, default=MyGroup.Level1Id, on_delete=models.SET_DEFAULT)
+    escalation = models.ForeignKey(Group, default=1, on_delete=models.SET_DEFAULT)
 
     def __str__(self):
         return f'{self.student.name} - {self.brief}'

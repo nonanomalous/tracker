@@ -60,12 +60,21 @@ class ProgressSerializer(ProgressHyperLink):
             validated_data['finishedDate'] = datetime.now()
         return Progress.objects.create(**validated_data)
 
+class BasicProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Progress
+        fields = [
+            'id',
+            'team',
+            'reason',
+        ]
+
 class IssueSerializer(serializers.HyperlinkedModelSerializer):
     student = serializers.ReadOnlyField(source='student.id')
     subcategory = serializers.PrimaryKeyRelatedField(
         many=False, queryset=SubCategory.objects.all(), read_only=False)
     status = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    progress = ProgressSerializer(many=True, read_only=True)
+    progress = BasicProgressSerializer(many=True, read_only=True)
 
     class Meta:
         model = Issue
