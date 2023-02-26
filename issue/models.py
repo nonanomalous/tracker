@@ -64,7 +64,7 @@ class Issue(models.Model):
         subcategory, _ = SubCategory.objects.get_or_create(name="General", category=category)
         return subcategory.id
 
-    brief = models.CharField(max_length=32, default="")
+    brief = models.CharField(max_length=128, default="")
     description = models.TextField(default="")
     student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
     subcategory = models.ForeignKey(SubCategory, default=default_subcategory, on_delete=models.PROTECT)
@@ -88,8 +88,8 @@ class Progress(models.Model):
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    closedby = models.ForeignKey(User, related_name="tickets_closed", null=True, on_delete=models.SET_NULL)
-    finishedDate = models.DateTimeField()
+    closedby = models.ForeignKey(User, related_name="tickets_closed", null=True, blank=True, on_delete=models.SET_NULL)
+    finishedDate = models.DateTimeField(null=True, blank=True)
     
     def __str__(self):
         return f'Issue {self.issue.id} | pid: {self.id} | {self.reason.name}'

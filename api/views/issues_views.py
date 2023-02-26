@@ -1,9 +1,7 @@
-from django.db.models import Q
-
 from rest_framework import generics
 from rest_framework.response import Response
 
-from api.permissions import IsReportingStudentOrAdmin
+from api.permissions import IsReportingStudentOrStaff
 from api.serializers import IssueSerializer
 from issue.models import Issue
 
@@ -11,13 +9,14 @@ from issue.models import Issue
 class IssueList(generics.ListCreateAPIView):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
-    permission_classes = [IsReportingStudentOrAdmin]
+    permission_classes = [IsReportingStudentOrStaff]
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name='Student'):
-            lookups = Q(student=self.request.user)
-            queryset = self.queryset.filter(lookups)
-            return queryset
+        queryset = Issue.objects.exclude(status__name="Closed")
+        if self.request.user.groups.filter(name='Student').exists():
+            queryset = queryset.filter(student=self.request.user)
+        return queryset
+        
     
     def perform_create(self, serializer):
         serializer.save(student=self.request.user)
@@ -30,4 +29,4 @@ class IssueList(generics.ListCreateAPIView):
 class IssueDetail(generics.RetrieveUpdateAPIView):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
-    permission_classes = [IsReportingStudentOrAdmin]
+    permission_classes = [IsReportingStudentOrStaff]

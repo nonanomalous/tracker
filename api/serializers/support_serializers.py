@@ -1,7 +1,17 @@
+from django.contrib.auth.models import Group
 from rest_framework import serializers
-from issue.models import Comment, Document, Link, Progress, Reason
 
-class ProgressSerializer(serializers.HyperlinkedModelSerializer):
+from account.models import User
+from issue.models import Comment, Document, Issue, Link, Progress, Reason, Status
+
+from datetime import datetime
+
+class ProgressSerializer(serializers.ModelSerializer):
+    assignee = serializers.PrimaryKeyRelatedField(many=False, queryset=User.staff.all(), read_only=False)
+    team = serializers.PrimaryKeyRelatedField(many=False, queryset=Group.objects.exclude(name="Student"), read_only=False)
+    issue = serializers.PrimaryKeyRelatedField(many=False, queryset=Issue.objects.all(), read_only=False)
+    reason = serializers.PrimaryKeyRelatedField(many=False, queryset=Reason.objects.all(), read_only=False)
+
     class Meta:
         model = Progress
         fields = [
@@ -11,31 +21,38 @@ class ProgressSerializer(serializers.HyperlinkedModelSerializer):
             'reason',
             'description',
         ]
+    
+    def create(self, validated_data):
+        user = validated_data.pop('user')
+        if validated_data['reason'] == Reason.objects.get(name='Resolved'):
+            issue = validated_data['issue']
+            issue.status = Status.objects.get(name='Closed')
+            issue.closedby = user
+            issue.save()
+            validated_data['finishedDate'] = datetime.now()
+        return Progress.objects.create(**validated_data)
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
-            'url',
             'message',
             'progress',
             'link',
             'document',
         ]
 
-class DocumentSerializer(serializers.HyperlinkedModelSerializer):
+class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = [
-            'url',
             'file',
         ]
 
-class LinkSerializer(serializers.HyperlinkedModelSerializer):
+class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
         fields = [
-            'url',
             'anchortext',
             'summary',
         ]

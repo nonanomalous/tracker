@@ -2,11 +2,12 @@ from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
+app_name = 'api'
 urlpatterns = [
     path('', views.api_root),
     path('issues/', views.IssueList.as_view(), name='issue-list'),
     path('issue/<int:pk>/', views.IssueDetail.as_view(), name='issue-detail'),
-    path('progress/', views.ProgressList.as_view(), name='progress-list'),
+    path('issue/<int:issue_pk>/progress/', views.ProgressList.as_view(), name='progress-list'),
     path('progress/<int:pk>/', views.ProgressDetail.as_view(), name='progress-detail'),
     path('comments/', views.CommentList.as_view(), name='comment-list'),
     path('comment/<int:pk>/', views.CommentDetail.as_view(), name='comment-detail'),

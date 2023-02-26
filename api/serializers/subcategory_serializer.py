@@ -3,11 +3,10 @@ from rest_framework import serializers
 from issue.models import SubCategory, Category
 
 
-class SubCategorySerializer(serializers.HyperlinkedModelSerializer):
+class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = ['url',
-                  'id',
+        fields = [
                   'name',
                   'category',
                   'supportedBy',
@@ -16,11 +15,10 @@ class SubCategorySerializer(serializers.HyperlinkedModelSerializer):
                   'documents',
                   ]
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['url',
-                  'id',
+        fields = [
                   'name',
                   'subcategories',
                   ]

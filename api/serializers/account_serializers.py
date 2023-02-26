@@ -5,16 +5,16 @@ from rest_framework import serializers
 
 User=get_user_model()
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     # issues = serializers.PrimaryKeyRelatedField(many=True, queryset=Issue.objects.all())
 
     class Meta:
         model = User
-        fields = ['url', 'id', 'name', 'email', 'groups', 'issues']
+        fields = ['name', 'email', 'groups', 'issues']
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['url', 'id', 'name', 'user_set']
+        fields = ['name', 'user_set']
