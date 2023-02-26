@@ -14,6 +14,19 @@ class IsReportingStudentOrStaff(permissions.BasePermission):
             return True
         return bool(obj.student == request.user)
 
+class IsReportingStudentReadOrStaffReadWrite(permissions.BasePermission):
+    """
+    Student can view their own records
+    Staff can update
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if bool(request.user and request.user.groups.exclude(name='Student').exists()):
+            return True
+        elif bool(bool(obj.student == request.user) and request.method in SAFE_METHODS):
+            return True
+        return False
+
 
 class IsStaff(permissions.BasePermission):
     """

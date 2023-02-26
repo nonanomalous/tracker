@@ -10,6 +10,7 @@ migrations
 
 # Backup files # 
 *.bak 
+initial_data.json
 
 # If you are using PyCharm # 
 # User-specific stuff

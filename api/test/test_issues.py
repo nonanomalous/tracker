@@ -12,10 +12,7 @@ from issue import load
 User = get_user_model()
 
 class IssueCreateTests(APITestCase):
-    def setUp(self):
-        load.run()
-    
-    def tearDown(self): pass
+    fixtures = ["initial_data.json"]
     
     def test_add_issue_user1(self):
         """
@@ -24,7 +21,8 @@ class IssueCreateTests(APITestCase):
         """
         user = User.objects.get(email=TEST_USER_1)
         self.client.force_authenticate(user)
-        response = self.client.post(reverse('api:issue-list'), ISSUES['ISSUE1'], format='json')
+        data = ISSUES['ISSUE1']
+        response = self.client.post(reverse('api:issue-list'), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Issue.objects.filter(student__id=user.id).first().brief, ISSUES['ISSUE1']['brief'])
         self.client.logout()
@@ -36,7 +34,7 @@ class IssueCreateTests(APITestCase):
         """
         user = User.objects.get(email=TEST_USER_2)
         self.client.force_authenticate(user)
-        response = self.client.post(reverse('api:issue-list'), ISSUES['ISSUE1'], format='json')
+        response = self.client.post(reverse('api:issue-list'), ISSUES['ISSUE2'], format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Issue.objects.filter(student__id=user.id).first().brief, ISSUES['ISSUE1']['brief'])
         self.client.logout()
