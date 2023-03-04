@@ -2,16 +2,16 @@
 from rest_framework import serializers
 from issue.models import Reason, Status
 
-class StatusSerializer(serializers.HyperlinkedModelSerializer):
+class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
-        fields = ['url',
+        fields = [
                  'name',
                  ]
 
-class ReasonSerializer(serializers.HyperlinkedModelSerializer):
+class ReasonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reason
-        fields = ['url',
+        fields = [
                  'name',
                  ]

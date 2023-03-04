@@ -5,7 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .managers import CustomUserManager
+from .managers import CustomUserManager, StaffManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -19,6 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+    staff = StaffManager()
 
     def __str__(self):
         return self.email

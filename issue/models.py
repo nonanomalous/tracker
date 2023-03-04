@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, GroupManager
 from account.models import User
+from .mixins import GetterMixin
 
 class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
@@ -17,7 +18,7 @@ class Link(models.Model):
     def __str__(self):
         return f'{self.anchortext}'
 
-class Category(models.Model):
+class Category(models.Model, GetterMixin):
     name = models.CharField(max_length=32)
     
     def __str__(self):
@@ -27,14 +28,15 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
         ordering = ['id']
 
-class SubCategory(models.Model):
-    def default_supported_by():
-        group, _ = Group.objects.get_or_create(name="Level1")
-        return group.id
+class MyGroup(Group, GetterMixin):
+    objects = GroupManager()
+    class Meta:
+        proxy = True
 
+class SubCategory(models.Model, GetterMixin):
     name = models.CharField(max_length=32)
-    category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
-    supportedBy = models.ForeignKey(Group, related_name='support_categories', null=True, blank=True, default=default_supported_by, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, related_name='subcategories', default=Category.GeneralId, on_delete=models.SET_DEFAULT)
+    supportedBy = models.ForeignKey(Group, related_name='support_categories', default=1, on_delete=models.SET_DEFAULT)
     links = models.ManyToManyField(Link, blank=True)
     documents = models.ManyToManyField(Document, blank=True)
 
@@ -45,51 +47,44 @@ class SubCategory(models.Model):
         verbose_name_plural = "SubCategories"
         ordering = ['id']
 
-class Status(models.Model):
-    name = models.CharField(max_length=32, default="")
-
+class Status(models.Model, GetterMixin):
+    name = models.CharField(max_length=32, default="New")
+    
     def __str__(self):
         return f'{self.name}'
-    
+
     class Meta:
         verbose_name_plural = "Statuses"
         ordering = ['id']
 
 class Issue(models.Model):
-    def default_status():
-        status, _ = Status.objects.get_or_create(name="New")
-        return status.id
-    def default_subcategory():
-        category, _ = Category.objects.get_or_create(name="General")
-        subcategory, _ = SubCategory.objects.get_or_create(name="General", category=category)
-        return subcategory.id
-
-    brief = models.CharField(max_length=32, default="")
+    brief = models.CharField(max_length=128, default="")
     description = models.TextField(default="")
     student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
-    subcategory = models.ForeignKey(SubCategory, default=default_subcategory, on_delete=models.PROTECT)
-    status = models.ForeignKey(Status, default=default_status, on_delete=models.PROTECT)
-    
+    subcategory = models.ForeignKey(SubCategory, default=SubCategory.GeneralId, on_delete=models.PROTECT)
+    status = models.ForeignKey(Status, default=Status.NewId, on_delete=models.PROTECT)
+    escalation = models.ForeignKey(Group, default=1, on_delete=models.SET_DEFAULT)
+
     def __str__(self):
         return f'{self.student.name} - {self.brief}'
-
-class Reason(models.Model):
+    
+class Reason(models.Model, GetterMixin):
     name = models.CharField(max_length=32)
     
     def __str__(self):
         return f'{self.name}'
     
 class Progress(models.Model):
-    assignee = models.ForeignKey(User, related_name="assigned_tickets", on_delete=models.CASCADE)
-    team = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL)
+    assignee = models.ForeignKey(User, null=True, blank=True, default=None, related_name="assigned_tickets", on_delete=models.CASCADE)
+    team = models.ForeignKey(Group, default=MyGroup.GeneralId, on_delete=models.SET_DEFAULT)
     issue = models.ForeignKey(Issue, related_name='progress', on_delete=models.CASCADE)
-    reason = models.ForeignKey(Reason, null=True, on_delete=models.SET_NULL)
+    reason = models.ForeignKey(Reason, null=True, default=Reason.CreatedId, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    closedby = models.ForeignKey(User, related_name="tickets_closed", null=True, on_delete=models.SET_NULL)
-    finishedDate = models.DateTimeField()
+    closedby = models.ForeignKey(User, related_name="tickets_closed", null=True, blank=True, on_delete=models.SET_NULL)
+    finishedDate = models.DateTimeField(null=True, blank=True)
     
     def __str__(self):
         return f'Issue {self.issue.id} | pid: {self.id} | {self.reason.name}'

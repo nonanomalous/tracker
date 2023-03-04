@@ -1,0 +1,16 @@
+import environ
+
+env = environ.Env()
+environ.Env.read_env('.env')
+TEST_USER_1 = env('TEST_USER_1')
+TEST_PASS_1 = env('TEST_PASS_1')
+TEST_USER_2 = env('TEST_USER_2')
+TEST_PASS_2 = env('TEST_PASS_2')
+TEST_USER_3 = env('TEST_USER_3')
+TEST_PASS_3 = env('TEST_PASS_3')
+TEST_ADM_USER = env('TEST_ADM_USER')
+TEST_ADM_PASS = env('TEST_ADM_PASS')
+TEST_L1_USER = env('TEST_L1_USER')
+TEST_L1_PASS = env('TEST_L1_PASS')
+TEST_L2_USER = env('TEST_L2_USER')
+TEST_L2_PASS = env('TEST_L2_PASS')

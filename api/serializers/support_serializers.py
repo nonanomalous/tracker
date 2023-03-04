@@ -1,41 +1,31 @@
+from django.contrib.auth.models import Group
 from rest_framework import serializers
-from issue.models import Comment, Document, Link, Progress, Reason
 
-class ProgressSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Progress
-        fields = [
-            'assignee',
-            'team',
-            'issue',
-            'reason',
-            'description',
-        ]
+from account.models import User
+from issue.models import Comment, Document, Issue, Link, Progress, Reason, Status
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
-            'url',
             'message',
             'progress',
             'link',
             'document',
         ]
 
-class DocumentSerializer(serializers.HyperlinkedModelSerializer):
+class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = [
-            'url',
             'file',
         ]
 
-class LinkSerializer(serializers.HyperlinkedModelSerializer):
+class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
         fields = [
-            'url',
             'anchortext',
             'summary',
         ]
