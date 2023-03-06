@@ -50,7 +50,9 @@ ROOT_URLCONF = 'student_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,7 +125,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console','file'],
+            'handlers': ['console', 'file'],
             'propagate': True,
         }
     }
@@ -155,9 +157,9 @@ STATICFILES_DIRS = []
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'account.User'
-LOGIN_URL = 'account:login'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'issue:home'
-LOGOUT_REDIRECT_URL = 'account:login'
+LOGOUT_REDIRECT_URL = 'login'
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"

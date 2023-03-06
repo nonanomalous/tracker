@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Group, GroupManager
 from account.models import User
+from .managers import OpenIssueManager, ClosedIssueManager
 from .mixins import GetterMixin
 
 class Document(models.Model):
@@ -75,9 +76,38 @@ class Issue(models.Model):
     status = models.ForeignKey(Status, default=Status.NewId, on_delete=models.PROTECT)
     escalation = models.ForeignKey(Group, default=1, on_delete=models.SET_DEFAULT)
 
+    objects = models.Manager()
+    openIssues = OpenIssueManager()
+    closedIssues = ClosedIssueManager()
+
     def __str__(self):
         return f'{self.student.name} - {self.brief}'
     
+    def get_current_progress(self):
+        return self.progress.filter(active=1).last()
+
+    def get_current_subcategory(self):
+        currentProgress = self.get_current_progress()
+        if currentProgress and currentProgress.team:
+            return currentProgress.team.name
+        else: return None
+    
+    def get_current_team(self):
+        currentProgress = self.get_current_progress()
+        if currentProgress and currentProgress.team:
+            return currentProgress.team.name
+        else: return None
+    
+    def get_current_assignee(self):
+        currentProgress = self.get_current_progress()
+        if currentProgress and currentProgress.assignee:
+            return currentProgress.assignee.name
+        else: return None
+    
+    def get_current_due(self):
+        if currentProgress := self.get_current_progress():
+            return currentProgress.due
+
 class Reason(models.Model, GetterMixin):
     name = models.CharField(max_length=32)
     
@@ -93,6 +123,7 @@ class Progress(models.Model):
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    due = models.DateTimeField(null=True, blank=True)
     closedby = models.ForeignKey(User, related_name="tickets_closed", null=True, blank=True, on_delete=models.SET_NULL)
     finishedDate = models.DateTimeField(null=True, blank=True)
     
