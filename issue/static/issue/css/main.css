@@ -1,0 +1,42 @@
+header {
+    min-height: 80px;
+}
+
+#issuelist_sidebar {
+    box-sizing: border-box;
+    border-top:1px solid rgba(108,117,125,0.3) !important;
+    border-bottom:1px solid rgba(108,117,125,0.3) !important;
+}
+
+#issuelist_sidebar li {
+    background-color: #ffe5d0;
+
+    padding: 10px;
+    margin: 1px;
+    border: 2px solid fecba1;
+    cursor: pointer;
+}
+
+#issuelist_sidebar li.active {
+    background-color: #fecba1;
+}
+
+#issuelist_sidebar li:hover {
+    background-color: #fecba1;
+}
+
+#issuelist_sidebar li:active {
+    transform: translate(1px, 1px);
+}
+
+#issuelist_sidebar li.deleted {
+    background-color: #f8d7da!important;
+}
+
+#issuelist_sidebar li.deleted.active {
+    background-color: #f1aeb5!important;
+}
+
+#issuelist_sidebar li.deleted:hover {
+    background-color: #f1aeb5!important;
+}

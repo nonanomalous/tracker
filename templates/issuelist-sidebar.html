@@ -1,0 +1,22 @@
+<nav class="col-md-2 d-none d-md-block bg-body-tertiary" id="issuelist_sidebar">
+    <div class="sidebar-sticky">
+        <header class="my-3 border-bottom d-flex flex-column align-content-end">
+            <button class="btn btn-success mb-5">Add New Ticket</button>
+            <h2 class="text-muted">Views</h2>
+        </header>
+        <ul class="nav d-flex flex-column">
+            {% if user.is_support_agent %}
+            {% else %}
+            {% endif %}
+            <li class="{% if user.active_view == 'Open' %}active{% endif %} nav-item rounded shadow">All Open Tickets</li>
+            <li class="{% if user.active_view == 'New' %}active{% endif %} nav-item rounded shadow">All Unassigned Tickets</li>
+            <li class="{% if user.active_view == 'Assigned' %}active{% endif %} nav-item rounded shadow">My New Tickets</li>
+            <li class="{% if user.active_view == 'In Progress' %}active{% endif %} nav-item rounded shadow">My In-Progress Tickets</li>
+            <li class="{% if user.active_view == 'Referred' %}active{% endif %} nav-item rounded shadow">Referred Tickets</li>
+            <li class="{% if user.active_view == 'Escalated' %}active{% endif %} nav-item rounded shadow">Escalated Tickets</li>
+            <li class="{% if user.active_view == 'Resolved' %}active{% endif %} nav-item rounded shadow">Resolved Tickets</li>
+            <li class="{% if user.active_view == 'Closed' %}active{% endif %} nav-item rounded shadow">Closed Tickets</li>
+            <li class="{% if user.active_view == 'Deleted' %}active{% endif %} nav-item rounded shadow deleted">Deleted Tickets</li>
+        </ul>
+    </div>
+</nav> 

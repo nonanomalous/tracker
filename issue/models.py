@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Group, GroupManager
 from account.models import User
+from .managers import OpenIssueManager, ClosedIssueManager
 from .mixins import GetterMixin
 
 class Document(models.Model):
@@ -34,6 +35,9 @@ class MyGroup(Group, GetterMixin):
         proxy = True
 
 class SubCategory(models.Model, GetterMixin):
+    def default_supported_by():
+        group, _ = Group.objects.get_or_create(name="Level1")
+        return group.id
     name = models.CharField(max_length=32)
     category = models.ForeignKey(Category, related_name='subcategories', default=Category.GeneralId, on_delete=models.SET_DEFAULT)
     supportedBy = models.ForeignKey(Group, related_name='support_categories', default=1, on_delete=models.SET_DEFAULT)
@@ -58,6 +62,13 @@ class Status(models.Model, GetterMixin):
         ordering = ['id']
 
 class Issue(models.Model):
+    def default_status():
+        status, _ = Status.objects.get_or_create(name="New")
+        return status.id
+    def default_subcategory():
+        category, _ = Category.objects.get_or_create(name="General")
+        subcategory, _ = SubCategory.objects.get_or_create(name="General", category=category)
+        return subcategory.id
     brief = models.CharField(max_length=128, default="")
     description = models.TextField(default="")
     student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
@@ -65,9 +76,38 @@ class Issue(models.Model):
     status = models.ForeignKey(Status, default=Status.NewId, on_delete=models.PROTECT)
     escalation = models.ForeignKey(Group, default=1, on_delete=models.SET_DEFAULT)
 
+    objects = models.Manager()
+    openIssues = OpenIssueManager()
+    closedIssues = ClosedIssueManager()
+
     def __str__(self):
         return f'{self.student.name} - {self.brief}'
     
+    def get_current_progress(self):
+        return self.progress.filter(active=1).last()
+
+    def get_current_subcategory(self):
+        currentProgress = self.get_current_progress()
+        if currentProgress and currentProgress.team:
+            return currentProgress.team.name
+        else: return None
+    
+    def get_current_team(self):
+        currentProgress = self.get_current_progress()
+        if currentProgress and currentProgress.team:
+            return currentProgress.team.name
+        else: return None
+    
+    def get_current_assignee(self):
+        currentProgress = self.get_current_progress()
+        if currentProgress and currentProgress.assignee:
+            return currentProgress.assignee.name
+        else: return None
+    
+    def get_current_due(self):
+        if currentProgress := self.get_current_progress():
+            return currentProgress.due
+
 class Reason(models.Model, GetterMixin):
     name = models.CharField(max_length=32)
     
@@ -83,6 +123,7 @@ class Progress(models.Model):
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    due = models.DateTimeField(null=True, blank=True)
     closedby = models.ForeignKey(User, related_name="tickets_closed", null=True, blank=True, on_delete=models.SET_NULL)
     finishedDate = models.DateTimeField(null=True, blank=True)
     
