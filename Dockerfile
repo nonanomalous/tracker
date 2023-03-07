@@ -15,7 +15,7 @@ RUN apk add --virtual .build-deps gcc python3-dev musl-dev postgresql-dev git na
 RUN apk add --no-cache libpq
 
 #git clone the repo
-RUN git clone https://github.com/nonanomalous/tracker.git tracker
+RUN git clone https://github.com/nonanomalous/tracker.git /app/tracker
 
 # ensure www-data user exists
 RUN set -x ; \
@@ -23,7 +23,6 @@ RUN set -x ; \
   adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 
 #pip
-RUN cd tracker
 WORKDIR /app/tracker
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
@@ -32,10 +31,13 @@ RUN pip install -r requirements.txt
 #cleanup leftovers and install nginx
 RUN apk del .build-deps
 RUN apk add nginx
-COPY nginx.default /etc/nginx/sites-available/default
+RUN mkdir -p /etc/nginx/sites-available/
+RUN cp /app/tracker/nginx.default /etc/nginx/sites-available/default
+
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
-COPY start-server.sh /app/tracker
+#no need, its pulled from git already
+#COPY start-server.sh /app/tracker
 
 # copy project
 #COPY . /app/tracker/
