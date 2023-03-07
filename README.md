@@ -1,13 +1,11 @@
 # Student Issue Tracker
 
-1. Pull the repo
+Pull the repo
 
-    git clone
+git clone https://github.com/nonanomalous/tracker
 
-2. Build the dockerfile
+cd tracker
 
-    docker build -t tracker .
+docker-compose up -d
 
-3. run the built image
-
-    suggest use a docker-compose.yml as we need to pass in secret key
+visit localhost:8000 to view in browser
