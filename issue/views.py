@@ -13,10 +13,15 @@ class IssueListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         
-        match self.request.user.active_view:
-            case 'Closed': qs = Issue.closedIssues.all()
-            case 'Open': qs = Issue.openIssues.all()
-            case 'Solved': qs = Issue.openIssues.filter()
+        #revert back to 3.9 compat, as django docker-compose is v3.9 LS
+
+        if (self.request.user.active_view == 'Closed'): 
+            qs = Issue.closedIssues.all()
+        elif  (self.request.user.active_view =='Open'): 
+            qs = Issue.openIssues.all()
+        elif  (self.request.user.active_view =='Solved'):
+            qs = Issue.openIssues.filter()
+
         if not self.request.user.is_support_agent():
             qs = qs.filter(student=self.request.user)
         return qs
