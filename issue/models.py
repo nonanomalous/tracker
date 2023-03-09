@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Group, GroupManager
 from account.models import User
-from .managers import OpenIssueManager, ClosedIssueManager
+from .managers import OpenIssueManager, ClosedIssueManager, DeletedIssueManager
 from .mixins import GetterMixin
 
 class Document(models.Model):
@@ -74,11 +74,12 @@ class Issue(models.Model):
     student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
     subcategory = models.ForeignKey(SubCategory, default=SubCategory.GeneralId, on_delete=models.PROTECT)
     status = models.ForeignKey(Status, default=Status.NewId, on_delete=models.PROTECT)
-    escalation = models.ForeignKey(Group, default=1, on_delete=models.SET_DEFAULT)
+    escalation = models.ForeignKey(Group, default=MyGroup.Level1Id, on_delete=models.SET_DEFAULT)
 
     objects = models.Manager()
     openIssues = OpenIssueManager()
     closedIssues = ClosedIssueManager()
+    deletedIssues = DeletedIssueManager()
 
     def __str__(self):
         return f'{self.student.name} - {self.brief}'
