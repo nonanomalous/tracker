@@ -2,10 +2,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
-from .forms import CreateIssueForm
+from .forms import CreateIssueForm, UpdateIssueForm
 from .models import Issue, Status
 
 class IssueListView(LoginRequiredMixin, ListView):
@@ -57,6 +57,7 @@ class IssueListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['createIssueForm'] = CreateIssueForm
+        context['updateIssueForm'] = UpdateIssueForm
         return context
 
 class IssueCreateView(LoginRequiredMixin, CreateView):
@@ -79,3 +80,9 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
             return self.form_valid(form, request)
         else:
             return self.form_invalid(form)
+        
+class IssueUpdateView(LoginRequiredMixin, UpdateView):
+    success_url = reverse_lazy('issue:home')
+    form_class = UpdateIssueForm
+    template_name = 'issue/issue_update.html'
+    model = Issue
