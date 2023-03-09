@@ -8,3 +8,7 @@ class OpenIssueManager(models.Manager):
 class ClosedIssueManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status__name="Closed")
+
+class DeletedIssueManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status__name="Deleted")
