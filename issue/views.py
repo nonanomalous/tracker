@@ -75,6 +75,7 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
+        self.object = None
         form = self.get_form()
         
         if form.is_valid():
