@@ -8,15 +8,14 @@
             {% if user.is_support_agent %}
             {% else %}
             {% endif %}
-            <li class="{% if user.active_view == 'Open' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Open">All Open Tickets</a></li>
-            <li class="{% if user.active_view == 'New' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=New">All Unassigned Tickets</a></li>
-            <li class="{% if user.active_view == 'Assigned' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Assigned">My New Tickets</a></li>
-            <li class="{% if user.active_view == 'In Progress' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=In Progress">My In-Progress Tickets</a></li>
-            <li class="{% if user.active_view == 'Referred' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Referred">Referred Tickets</a></li>
-            <li class="{% if user.active_view == 'Escalated' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Escalated">Escalated Tickets</a></li>
-            <li class="{% if user.active_view == 'Resolved' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Resolved">Resolved Tickets</a></li>
-            <li class="{% if user.active_view == 'Closed' %}active{% endif %} nav-item rounded shadow"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Closed">Closed Tickets</a></li>
-            <li class="{% if user.active_view == 'Deleted' %}active{% endif %} nav-item rounded shadow deleted"><a class="text-decoration-none text-muted" href="{% url 'issue:home' %}?filter=Deleted"></a>Deleted Tickets</a></li>
+            <li class="{% if user.active_view == 'Open' %}active{% endif %} nav-item rounded shadow">
+                <a class="text-decoration-none text-muted" href="{% url 'issue:home' %}">All Open Tickets</a>
+            </li>
+            {% for status in statuses %}
+            <li class="{% if user.active_view == status.name %}active{% endif %} nav-item rounded shadow {{status}}">
+                <a class="text-decoration-none text-muted {{status}}" href="{% url 'issue:home' %}?filter={{status}}">{{status}} Tickets</a>
+            </li>
+            {% endfor %}
         </ul>
     </div>
 </nav> 
