@@ -26,7 +26,7 @@ class IssueList(generics.ListCreateAPIView):
         to show only tickets reported by themselves
         """
         queryset = Issue.objects.exclude(status__name="Closed").prefetch_related("progress")
-        if not self.request.user.groups.exclude(name='Student').exists():
+        if not self.request.user.is_support_agent():
             queryset = queryset.filter(student=self.request.user).prefetch_related("progress")
         return queryset
     

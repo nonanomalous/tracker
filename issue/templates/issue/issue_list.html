@@ -15,22 +15,27 @@
         <thead>
             <tr>
                 <th scope="col"><input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for select-all"></th>
+                <th scope="col"></th>
                 <th scope="col">Brief</th>
                 <th scope="col">Category</th>
                 <th scope="col">Team</th>
                 <th scope="col">Assignee</th>
                 <th scope="col">Due</th>
+                <th scope="col">Status</th>
             </tr>
         </thead>
         <tbody>
             {% for issue in issue_list %}
             <tr>
               <th scope="row"><input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for issue {{issue.pk}}"></th>
+              <td><button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#updateIssue" data-bs-issuepk="{{issue.pk}}">Open</button>
+              </td>
               <td>{{ issue.brief }}</td>
               <td>{{ issue.subcategory.name }}</td>
               <td>{{ issue.get_current_team }}</td>
               <td>{{ issue.get_current_assignee }}</td>
               <td>{{ issue.get_current_due }}</td>
+              <td>{{ issue.status }}</td>
             </tr>
             {% endfor %}
           </tbody>
