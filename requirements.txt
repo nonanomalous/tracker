@@ -1,4 +1,5 @@
 asgiref
+beautifulsoup4
 boto3
 crispy-tailwind
 Django
