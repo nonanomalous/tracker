@@ -34,7 +34,7 @@ class IssueCreateTests(APITestCase):
         data = ISSUES['ISSUE1']
         response = self.client.post(reverse('api:issue-list'), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Issue.objects.filter(student__id=user.id).first().brief, ISSUES['ISSUE1']['brief'])
+        self.assertEqual(Issue.objects.filter(student__id=user.id).last().brief, ISSUES['ISSUE1']['brief'])
         self.client.logout()
 
     def test_add_issue_user2(self):
@@ -46,7 +46,7 @@ class IssueCreateTests(APITestCase):
         self.client.force_authenticate(user)
         response = self.client.post(reverse('api:issue-list'), ISSUES['ISSUE2'], format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Issue.objects.filter(student__id=user.id).first().brief, ISSUES['ISSUE2']['brief'])
+        self.assertEqual(Issue.objects.filter(student__id=user.id).last().brief, ISSUES['ISSUE2']['brief'])
         self.client.logout()
 
 class IssuesListTests(APITestCase):

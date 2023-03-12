@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from .forms import CreateIssueForm, UpdateIssueForm
-from .models import Issue, Status
+from .models import Issue, MyGroup, Status
 
 class IssueListView(LoginRequiredMixin, ListView):
     model = Issue
@@ -17,13 +17,13 @@ class IssueListView(LoginRequiredMixin, ListView):
         #revert back to 3.9 compat, as django docker-compose is v3.9 LS
         view = self.request.user.active_view
         if view == 'Open': qs = Issue.openIssues.all()
-        if view == 'New': qs = Issue.openIssues.all()
+        if view == 'New': qs = Issue.openIssues.filter(status__name='New')
         if view == 'Assigned': qs = Issue.objects.filter(status__name='Assigned')
         if view == 'In Progress': qs = Issue.objects.filter(status__name='In Progress')
         if view == 'Referred': qs = Issue.objects.filter(status__name='Referred')
-        if view == 'Escalated': qs = Issue.objects.filter(status__name='Escalated')
+        if view == 'Escalated': qs = Issue.objects.filter(escalation__name__in=['Level2','Level3'])
         if view == 'Resolved': qs = Issue.objects.filter(status__name='Resolved')
-        if view == 'Closed': qs = Issue.closedIssues.filter()
+        if view == 'Closed': qs = Issue.closedIssues.all()
         if view == 'Deleted': qs = Issue.objects.filter(status__name='Deleted')
         if not self.request.user.is_support_agent():
             qs = qs.filter(student=self.request.user)
@@ -83,8 +83,44 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
         else:
             return self.form_invalid(form)
         
-class IssueUpdateView(LoginRequiredMixin, UpdateView):
+class IssueUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy('issue:home')
     form_class = UpdateIssueForm
     template_name = 'issue/issue_update.html'
     model = Issue
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests: instantiate a form instance with the passed
+        POST variables and then check if it's valid.
+        """
+        submitButtons = ['Update','Escalate','Resolve','Close']
+        btn = [btn for btn in submitButtons if btn in request.POST][0]
+
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form, btn)
+        return self.form_invalid(form)
+
+    def test_func(self):
+        obj = self.get_object()
+        staff = bool(self.request.user.is_support_agent())
+        myself = bool(obj.student == self.request.user)
+        safe = bool(self.request.method == 'GET' or 
+                    'Escalate' not in self.request.POST)
+        return staff or (myself and safe)
+    
+    def form_valid(self, form, btn):
+        """If the form is valid, save the associated model."""
+        self.object = form.save(commit=False)
+        if btn == 'Escalate':
+            if self.object.escalation_id == MyGroup.Level1Id():
+                self.object.escalation_id = MyGroup.Level2Id()
+            else:
+                self.object.escalation_id = MyGroup.Level3Id()
+        if btn == 'Resolve':
+            self.object.status_id = Status.ResolvedId()
+        if btn == 'Closed':
+            self.object.status_id = Status.ClosedId()
+        self.object.save()
+        return super().form_valid(form)

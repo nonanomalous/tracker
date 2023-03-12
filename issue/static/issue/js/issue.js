@@ -6,7 +6,11 @@ updateModal.addEventListener("show.bs.modal", (event) => {
   const pk = button.getAttribute("data-bs-issuepk");
     fetch(`/issue/update/${pk}`)
         .then(response => response.text())
-        .then(html => setForm(html))
+      .then(html => {
+        setForm(html);
+        f = document.querySelector('#updateIssue form');
+        f.action = `/issue/update/${pk}/`;
+      })
         .catch(err => console.warn(err));
     
     
