@@ -20,6 +20,7 @@ class IssueListView(LoginRequiredMixin, ListView):
         if view == 'New': qs = Issue.openIssues.filter(status__name='New')
         if view == 'Assigned': qs = Issue.objects.filter(status__name='Assigned')
         if view == 'In Progress': qs = Issue.objects.filter(status__name='In Progress')
+        if view == 'Blocked': qs = Issue.objects.filter(status__name='Blocked')
         if view == 'Referred': qs = Issue.objects.filter(status__name='Referred')
         if view == 'Escalated': qs = Issue.objects.filter(escalation__name__in=['Level2','Level3'])
         if view == 'Resolved': qs = Issue.objects.filter(status__name='Resolved')
@@ -59,6 +60,8 @@ class IssueListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['createIssueForm'] = CreateIssueForm
         context['updateIssueForm'] = UpdateIssueForm
+        context['applied_filter'] = self.request.GET.get('filter', 'Open')
+        context['statuses'] = Status.objects.all()
         return context
 
 class IssueCreateView(LoginRequiredMixin, CreateView):

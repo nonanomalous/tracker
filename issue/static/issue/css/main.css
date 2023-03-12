@@ -29,14 +29,14 @@ header {
     transform: translate(1px, 1px);
 }
 
-#issuelist_sidebar li.deleted {
+#issuelist_sidebar li.Deleted {
     background-color: #f8d7da!important;
 }
 
-#issuelist_sidebar li.deleted.active {
+#issuelist_sidebar li.Deleted.active {
     background-color: #f1aeb5!important;
 }
 
-#issuelist_sidebar li.deleted:hover {
+#issuelist_sidebar li.Deleted:hover {
     background-color: #f1aeb5!important;
 }

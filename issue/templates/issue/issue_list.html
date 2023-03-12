@@ -6,7 +6,7 @@
     style="--bs-border-opacity: .3;">
     <header class="d-flex justify-content-between my-5 border-bottom" style="min-height: 80px;">
         <div class="left">
-            <h2>Open Issues</h2>
+            <h2>{{ applied_filter }} Issues</h2>
             <h5>{{issue_list.count}} issues</h5>
         </div>
     </header>
@@ -44,7 +44,7 @@
         </table>
     </table>
     {% else %}
-    <p class="text-muted">You do not have any open issues.</p>
+    <p class="text-muted">You do not have any {{ applied_filter }} issues.</p>
     {% endif %}
 
 
