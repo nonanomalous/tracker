@@ -22,6 +22,7 @@
                 <th scope="col">Assignee</th>
                 <th scope="col">Due</th>
                 <th scope="col">Status</th>
+                <th scope="col">Escalation</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@
               <td>{{ issue.get_current_assignee }}</td>
               <td>{{ issue.get_current_due }}</td>
               <td>{{ issue.status }}</td>
+              <td>{{ issue.escalation.name }}</td>
             </tr>
             {% endfor %}
           </tbody>
