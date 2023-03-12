@@ -9,7 +9,7 @@ from .managers import CustomUserManager, StaffManager
 
 class ContextMethodMixin:
     def is_support_agent(self):
-        return self.groups.exclude(name="Student").count() > 0
+        return self.groups.exclude(name="Student").exists()
 
     def main_cols(self):
         if self.is_superuser:
