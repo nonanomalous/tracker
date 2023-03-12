@@ -36,11 +36,10 @@ class MyGroup(Group, GetterMixin):
 
 class SubCategory(models.Model, GetterMixin):
     def default_supported_by():
-        group, _ = Group.objects.get_or_create(name="Level1")
-        return group.id
+        return Group.objects.first().id
     name = models.CharField(max_length=32)
     category = models.ForeignKey(Category, related_name='subcategories', default=Category.GeneralId, on_delete=models.SET_DEFAULT)
-    supportedBy = models.ForeignKey(Group, related_name='support_categories', default=1, on_delete=models.SET_DEFAULT)
+    supportedBy = models.ForeignKey(Group, related_name='support_categories', default=MyGroup.Level1Id, on_delete=models.SET_DEFAULT)
     links = models.ManyToManyField(Link, blank=True)
     documents = models.ManyToManyField(Document, blank=True)
 
@@ -63,12 +62,9 @@ class Status(models.Model, GetterMixin):
 
 class Issue(models.Model):
     def default_status():
-        status, _ = Status.objects.get_or_create(name="New")
-        return status.id
+        return Status.objects.first().id
     def default_subcategory():
-        category, _ = Category.objects.get_or_create(name="General")
-        subcategory, _ = SubCategory.objects.get_or_create(name="General", category=category)
-        return subcategory.id
+        return SubCategory.objects.first().id
     brief = models.CharField(max_length=128, default="")
     description = models.TextField(default="")
     student = models.ForeignKey(User, related_name='issues', on_delete=models.PROTECT)
