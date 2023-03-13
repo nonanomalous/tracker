@@ -89,7 +89,7 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
 class IssueUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy('issue:home')
     form_class = UpdateIssueForm
-    template_name = 'issue/issue_update.html'
+    template_name = 'issue/issue_update_form.html'
     model = Issue
 
     def post(self, request, *args, **kwargs):

@@ -1,0 +1,19 @@
+<div class="modal fade" id="newIssue" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+aria-labelledby="newIssueLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title fs-5" id="newIssueLabel">Submit a New Issue</h2>
+        </div>
+        <form method="post" action="{% url 'issue:createIssue' %}">{% csrf_token %}
+            <div class="modal-body">
+                {{ createIssueForm.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>

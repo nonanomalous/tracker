@@ -1,0 +1,24 @@
+<div class="modal fade" id="updateIssue" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+aria-labelledby="updateIssueLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title fs-5" id="updateIssueLabel">Update an Issue</h2>
+        </div>
+        <form method="post" action="">{% csrf_token %}
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" name = "Update" class="btn btn-success">Update</button>
+                {% if user.is_support_agent %}
+                <button type="submit" name = "Escalate" class="btn btn-warning">Escalate</button>
+                <button type="submit" name = "Resolve" class="btn btn-info">Resolve</button>
+                <button type="submit" name = "Close" class="btn btn-outline-danger">Close</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+</div>
